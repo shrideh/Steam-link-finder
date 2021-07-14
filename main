@@ -1,0 +1,49 @@
+import bs4
+import shutil
+from urllib.request import urlopen as uReq
+from bs4 import BeautifulSoup as soup
+import string
+import random
+
+print("*********Steam link finder*********")
+
+def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
+
+
+url = "https://steamcommunity.com/id/"
+
+
+i = 0
+wolrd = str(input("Enter letters and numbers:  "))
+numline = int(input("Enter the number of fields:  "))
+if numline == 0:
+    numline = 3
+if wolrd == '':
+    wolrd = "0123456789qwertyuioplkjhgfdsazxcvbnm"
+e = int(len(wolrd)** numline)
+print(str(e))
+while i < e:
+    i = i + 1
+    my_url = url + id_generator(numline, wolrd)
+    print("TESTED " + str(i) + "/" + str(e))
+    uls_t = open('url_test.txt')
+    uls_t = uls_t.readlines()
+    uls_tt = uls_t[0]
+    for uls_tt in uls_t:
+        if my_url != uls_tt:
+            last_url = my_url
+    uls_test = open("url_test.txt", "a")
+    uls_test.write(last_url + "\n")
+    uls_test.close()
+    uClient = uReq(last_url)
+    page_html = uClient.read()
+    uClient.close()
+    page_soup = soup(page_html, "html.parser")
+    tare5 = page_soup.findAll("span", {"class": "actual_persona_name"})
+    print(" WORK ... " + last_url)
+    if tare5 == []:
+        print("IS OK ! " + ">>>" + last_url + "<<<")
+        uls_ok = open("url_ok.txt", "a")
+        uls_ok.write(last_url + "\n")
+        uls_ok.close()
